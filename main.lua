@@ -1,4 +1,19 @@
+if os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" then
+    require("lldebugger").start()
+end
+
+Logger = require("src.logger")
+
+function love.load()
+    Log("Love load")
+    Log("Hello world")
+end
+
+function love.update(dt)
+    Logger:update(dt)
+end
+
 function love.draw()
-    love.graphics.print("Hello World", 400, 300)
+    Logger:draw()
 end
 
