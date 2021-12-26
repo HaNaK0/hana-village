@@ -1,5 +1,9 @@
+--Main game table
 local game = {
+    --Contains all actors. If a table is added to this table
+    --Update and Draw will be called on the table if they exist
     actors = {},
+    --Set to true if actors are added or depth is changed
     dirty = false
 }
 
@@ -29,6 +33,8 @@ function game:load()
     self:sortActors()
 end
 
+-- Sorts the actors according to depth
+-- Sorting will only run if game is set to dirty
 function game:sortActors()
     if self.dirty == false then
         return
