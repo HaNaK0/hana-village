@@ -3,17 +3,22 @@ if os.getenv("LOCAL_LUA_DEBUGGER_VSCODE") == "1" then
 end
 
 Logger = require("src.logger")
+local game = require("src.game")
 
 function love.load()
     Log("Love load")
-    Log("Hello world")
+    game:load()
 end
 
 function love.update(dt)
     Logger:update(dt)
+
+    game:update(dt)
 end
 
 function love.draw()
     Logger:draw()
+
+    game:draw()
 end
 
