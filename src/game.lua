@@ -4,21 +4,31 @@ local game = {
     --Update and Draw will be called on the table if they exist
     actors = {},
     --Set to true if actors are added or depth is changed
-    dirty = false
+    dirty = false,
+    messages = {},
 }
 
+GameResult = {
+    OK = 0,
+    DELETE = 1,
+}
+
+---Meta table for the actors table
 local actors_mt = {
     __newindex = function (t, key, value)
-        rawset(t, key, value)
-        game.dirty = true
-
         if type(key) == "string" then
+            rawset(t, key, value)
+            value.__id = key
+            game.dirty = true
             table.insert(t, value)
+        else
+            Error("Cannot add an actor only with index, It needs to use a key")
         end
     end,
 }
 setmetatable(game.actors, actors_mt)
 
+---Called first and should be the method that adds all the starting actors
 function game:load()
     self.actors.test = {depth = 0, name = "Hej"}
     self.actors.test_2 = {
@@ -33,8 +43,7 @@ function game:load()
     self:sortActors()
 end
 
--- Sorts the actors according to depth
--- Sorting will only run if game is set to dirty
+---If game is marked as dirty then the objects get sorted according to depth
 function game:sortActors()
     if self.dirty == false then
         return
@@ -49,14 +58,32 @@ function game:sortActors()
     self.dirty = false
 end
 
+---Update all the actors added to the game
+---@param dt number the time since last update
 function game:update(dt)
-    for _, actor in ipairs(self.actors) do
+    local i = 1
+    while i <= #self.actors do
+        local actor = self.actors[i]
         if type(actor.update) == "function" then
-            actor:update(dt, self.actors)
+            local result = actor:update(dt, self.messages)
+
+            -- If result is delete remove the actor
+            if result == GameResult.DELETE then
+                table.remove(self.actors, i)
+                self.actors[actor.__id] = nil
+                i = i - 1
+            end
+        else
+            Error("Actor without an update function, actor will be removed. Actor: " .. actor.__id)
+            table.remove(self.actors, i)
+            self.actors[actor.__id] = nil
+            i = i - 1
         end
+        i = i + 1
     end
 end
 
+---Draw all the actors with a draw function
 function game:draw()
     self:sortActors()
 
