@@ -30,15 +30,8 @@ setmetatable(game.actors, actors_mt)
 
 ---Called first and should be the method that adds all the starting actors
 function game:load()
-    self.actors.test = {depth = 0, name = "Hej"}
-    self.actors.test_2 = {
-        depth =  2, 
-        name = "Nej",
-        draw = function ()
-            love.graphics.setColor(0, 1, 0, 1)
-            love.graphics.rectangle("fill", 100, 100, 10, 10)
-        end
-    }
+    self.actors.Mina = require("src.actors.actor");
+    assert(self.actors.Mina)
 
     self:sortActors()
 end
