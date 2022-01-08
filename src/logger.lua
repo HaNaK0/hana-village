@@ -6,7 +6,7 @@ local logger = {
     logs = {},
     color = {
         log = {r = 1, g = 1, b = 1},
-        error = {r = 1, g = 1, b = 1}
+        error = {r = 1, g = 0, b = 0}
     }
 }
 
